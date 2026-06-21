@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: spfm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: spfm_db
+      POSTGRES_USER: spfm_user
+      POSTGRES_PASSWORD: spfm_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - spfm_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  spfm_postgres_data:
