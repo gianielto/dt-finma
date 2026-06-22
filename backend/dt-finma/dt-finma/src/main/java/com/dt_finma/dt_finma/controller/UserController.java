@@ -1,5 +1,6 @@
 package com.dt_finma.dt_finma.controller;
 
+import com.dt_finma.dt_finma.exception.ResourceNotFoundException;
 import com.dt_finma.dt_finma.model.User;
 import com.dt_finma.dt_finma.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -24,12 +25,13 @@ public class UserController {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
-    
+
+    // Ahora
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping
