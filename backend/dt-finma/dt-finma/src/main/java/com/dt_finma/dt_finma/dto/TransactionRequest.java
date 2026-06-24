@@ -21,7 +21,7 @@ public class TransactionRequest {
     private String description;
 
     @NotNull(message = "Date is required")
-    private LocalDate date;
+    private LocalDate date; 
 
     @NotNull(message = "Account is required")
     private Long accountId;

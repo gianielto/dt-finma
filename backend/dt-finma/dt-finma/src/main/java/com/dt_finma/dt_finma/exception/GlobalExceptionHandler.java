@@ -18,13 +18,17 @@ public class GlobalExceptionHandler  {
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(
             EmailAlreadyExistsException ex, HttpServletRequest request){
+
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.put("email", ex.getMessage());
+
         ErrorResponse error = new ErrorResponse(
             LocalDateTime.now(),
             HttpStatus.CONFLICT.value(),
             "Conflict",
             ex.getMessage(),
             request.getRequestURI(),
-            null
+            validationErrors
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
@@ -32,13 +36,16 @@ public class GlobalExceptionHandler  {
     public ResponseEntity<ErrorResponse> handleResourceNotFound(
             ResourceNotFoundException ex, HttpServletRequest request) {
 
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.put("resouce", ex.getMessage());
+
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
                 "Not Found",
                 ex.getMessage(),
                 request.getRequestURI(),
-                null
+                validationErrors
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
@@ -46,6 +53,9 @@ public class GlobalExceptionHandler  {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(
             BadCredentialsException ex, HttpServletRequest request) {
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.put("Credentials", ex.getMessage());
+
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
@@ -53,7 +63,7 @@ public class GlobalExceptionHandler  {
                 "Unauthorized",
                 "Email o contrasena incorrectos",
                 request.getRequestURI(),
-                null
+                validationErrors
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
@@ -82,13 +92,16 @@ public class GlobalExceptionHandler  {
     public ResponseEntity<ErrorResponse> handleGenericException(
             Exception ex, HttpServletRequest request) {
 
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.put("generic ", ex.getMessage());
+
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
                 "Ocurrio un error inesperado",
                 request.getRequestURI(),
-                null
+                validationErrors
         );
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
