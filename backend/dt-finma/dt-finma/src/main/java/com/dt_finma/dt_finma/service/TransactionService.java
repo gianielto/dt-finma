@@ -5,11 +5,13 @@ import com.dt_finma.dt_finma.dto.TransactionRequest;
 import com.dt_finma.dt_finma.exception.ResourceNotFoundException;
 import com.dt_finma.dt_finma.model.Account;
 import com.dt_finma.dt_finma.model.Category;
+import com.dt_finma.dt_finma.model.SavingsGoal;
 import com.dt_finma.dt_finma.model.Transaction;
 import com.dt_finma.dt_finma.model.enums.TransactionType;
 import com.dt_finma.dt_finma.repository.AccountRepository;
 import com.dt_finma.dt_finma.repository.CategoryRepository;
 import com.dt_finma.dt_finma.repository.TransactionRepository;
+import com.dt_finma.dt_finma.repository.SavingsGoalRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +26,18 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
+    private final SavingsGoalRepository savingsGoalRepository;
 
     public TransactionService(
             TransactionRepository transactionRepository,
             AccountRepository accountRepository,
-            CategoryRepository categoryRepository
+            CategoryRepository categoryRepository,
+            SavingsGoalRepository savingsGoalRepository
     ) {
         this.transactionRepository = transactionRepository;
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
+        this.savingsGoalRepository = savingsGoalRepository;
     }
 
     @Transactional
@@ -55,7 +60,17 @@ public class TransactionService {
             throw new ResourceNotFoundException(
                     "Categoria no encontrada con id: " + request.getCategoryId());
         }
+        SavingsGoal savingsGoal = null;
+        if (request.getSavingsGoalId() != null) {
+            savingsGoal = savingsGoalRepository.findById(request.getSavingsGoalId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Meta de ahorro no encontrada con id: " + request.getSavingsGoalId()));
 
+            if (!savingsGoal.getUser().getId().equals(userId)) {
+                throw new ResourceNotFoundException(
+                        "Meta de ahorro no encontrada con id: " + request.getSavingsGoalId());
+            }
+        }
         Transaction transaction = new Transaction();
         transaction.setAmount(request.getAmount());
         transaction.setType(request.getType());
@@ -63,6 +78,7 @@ public class TransactionService {
         transaction.setDate(request.getDate());
         transaction.setAccount(account);
         transaction.setCategory(category);
+        transaction.setSavingsGoal(savingsGoal);
 
         Transaction savedTransaction = transactionRepository.save(transaction);
 

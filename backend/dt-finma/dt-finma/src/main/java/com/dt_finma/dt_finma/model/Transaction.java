@@ -53,4 +53,8 @@ public class Transaction {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "savings_goal_id", nullable = true)
+    private SavingsGoal savingsGoal;
 }

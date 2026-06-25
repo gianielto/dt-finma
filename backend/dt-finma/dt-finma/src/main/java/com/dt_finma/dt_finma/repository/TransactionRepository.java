@@ -23,7 +23,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     BigDecimal sumExpensesByCategoryAndDateRange(
             @Param("categoryId") Long categoryId,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate 
+            @Param("endDate") LocalDate endDate
     );
-
+    @Query("""
+        SELECT COALESCE(SUM(
+            CASE WHEN t.type = 'INCOME' THEN t.amount ELSE -t.amount END
+        ), 0)
+        FROM Transaction t
+        WHERE t.savingsGoal.id = :savingsGoalId
+        """)
+    BigDecimal sumContributionsBySavingsGoal(@Param("savingsGoalId") Long savingsGoalId);
 }

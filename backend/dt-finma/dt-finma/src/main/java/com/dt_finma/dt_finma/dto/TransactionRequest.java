@@ -21,11 +21,13 @@ public class TransactionRequest {
     private String description;
 
     @NotNull(message = "Date is required")
-    private LocalDate date; 
+    private LocalDate date;
 
     @NotNull(message = "Account is required")
     private Long accountId;
 
     @NotNull(message = "category is required")
     private Long categoryId;
+
+    private Long savingsGoalId;
 }
