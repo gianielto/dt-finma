@@ -23,7 +23,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     BigDecimal sumExpensesByCategoryAndDateRange(
             @Param("categoryId") Long categoryId,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
+            @Param("endDate") LocalDate endDate 
     );
 
 }
